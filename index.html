@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html>
+    <input type="text" id="input"><br>
+    <button type="button" onclick="generate();">Generate LaTeX</button><br><br>
+
+    <code>
+    <div id="output"></div>
+    </code>
+
+    <style>
+        code {
+          background-color: #eee;
+          border: 1px solid #999;
+          display: block;
+          padding: 20px;
+        }
+    </style>
+    <script>
+        function isdigit(c) {
+            return c >= '0' && c <= '9';
+        }
+
+        function isalpha(c) {
+            return c.toLowerCase() != c.toUpperCase();
+        }
+
+        function generate() {
+            let s = document.getElementById("input").value;
+            if (s.slice(-1) == '.') {
+                s = s.slice(0, -1);
+            }
+            s += " .";
+            s = s.replaceAll('\n', ' ');
+
+            document.getElementById('output').innerText = merge_math(wrap_vars(replace_unicode(s)));
+        }
+
+        function wrap_vars(input) {
+            let vars = ['a', 'b', 'c', 'd', 'x', 'y', 'z', 'p', 'q', 'm', 'n', 'k', 'd', 'r'];
+            // Ignore all commands (cdot, ge, etc.). Those will be wrapped by $ in replace_unicode.
+            let mathsym = ['/', '+', '-', '=', '>', '<', '(', ')'];
+            let punctuation = [',', '.', '?'];
+
+            let res = "";
+            res += input[0];
+
+            let in_math = false;
+            for (let i = 1; i < input.length - 1; i++) {
+                let prev = input[i - 1];
+                let curr = input[i];
+                let next = input[i + 1];
+
+                if (prev == ' ' && isalpha(curr)) {
+                    let found_nonvar = false;
+                    let word = curr;
+                    let next_space_index = 0;
+                    for (let j = i + 1; j < input.length; j++) {
+                        if (isalpha(input[j])) {
+                            word += input[j];
+                            if (vars.includes(input[j]) == false) {
+                                found_nonvar = true;
+                            }
+                        } else {
+                            next_space_index = j;
+                            break;
+                        }
+                    }
+
+                    let bank = ['and', 'any', 'can'];
+                    if (found_nonvar || bank.includes(word)) {
+                        i = next_space_index;
+                        res += word + ' ';
+                        continue;
+                    }
+                }
+
+                if (in_math) {
+                    if (isdigit(curr) == false && mathsym.includes(curr) == false && vars.includes(curr) == false) {
+                        in_math = false;
+                        res += '$';
+                        res += curr;
+                        continue;
+                    }
+
+                    res += curr;
+                } else {
+                    let is_var = (prev == ' ' || isdigit(prev)) && (vars.includes(curr) && (next == '.') == false) && (punctuation.includes(next) || mathsym.includes(next) || vars.includes(next) || isdigit(next) || next == ' ');
+                    if (is_var || isdigit(curr) || mathsym.includes(curr)) {
+                        in_math = true;
+                        res += '$';
+                    }
+
+                    res += curr;
+                }
+            }
+
+            res += input[input.length - 1];
+
+            return res;
+        }
+
+        function merge_math(input) {
+            let res = "";
+            let in_math = false;
+            let was_just_math = false;
+
+            for (let i = 0; i < input.length; i++) {
+                let ch = input[i];
+                if (ch == '$') {
+                    if (was_just_math) {
+                        was_just_math = false;
+                        continue;
+                    }
+
+                    if (in_math) {
+                        for (let j = i + 1; j < input.length; j++) {
+                            if (input[j] == ' ') {
+                                continue;
+                            }
+
+                            if (input[j] == '$') {
+                                was_just_math = true;
+                            } else {
+                                in_math = false;
+                                res += "$ ";
+                            }
+
+                            break;
+                        }
+                    } else {
+                        in_math = true;
+                        res += '$';
+                    }
+
+                    continue;
+                } else {
+                    if (ch != ' ') {
+                        was_just_math = false;
+                    }
+                }
+
+                res += ch;
+            }
+
+            return res;
+        }
+
+        function replace_unicode(input) {
+            return input.replaceAll(/\u2212/g, " - ")
+                        .replaceAll(/\u00b7/g, " $\\cdot$ ")
+                        .replaceAll("", " $\\lfloor$ ")
+                        .replaceAll("", " $\\rfloor$ ")
+                        .replaceAll(/\u2265/g, " $\\ge$ ")
+                        .replaceAll(/\u2264/g, " $\\le$ ")
+                        .replaceAll(/\u007c/g, " $|$ ")
+                        .replaceAll("=", " $\\ne$ ")
+                        .replaceAll("", " $\\lceil$ ")
+                        .replaceAll("", " $\\rceil$ ");
+        }
+    </script>
+</html>
