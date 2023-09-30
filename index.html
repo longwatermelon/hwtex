@@ -163,7 +163,9 @@
                         .replaceAll(/\u007c/g, " $|$ ")
                         .replaceAll("=", " $\\ne$ ")
                         .replaceAll("", " $\\lceil$ ")
-                        .replaceAll("", " $\\rceil$ ");
+                        .replaceAll("", " $\\rceil$ ")
+                        .replaceAll(/\u221a/g, " $\\sqrt$ ")
+                        .replaceAll(/\u2208/g, " $\\in$ ");
         }
     </script>
 </html>
