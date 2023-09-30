@@ -10,7 +10,7 @@
 
     Limitations
     <ul style="margin-top:0px;">
-        <li>Exponents, subscripts, and fractions are impossible to detect</li>
+        <li>Exponents, subscripts, and fractions are impossible to detect accurately</li>
         <li>Can't generate align environments</li>
         <li>It's impossible to decide if the character 'a' is a variable or a word, so it's treated as a variable by default</li>
     </ul>
@@ -24,6 +24,8 @@
         }
     </style>
     <script>
+        const vars = ['a', 'b', 'c', 'd', 'x', 'y', 'z', 'p', 'q', 'm', 'n', 'k', 'd', 'r'];
+
         function isdigit(c) {
             return c >= '0' && c <= '9';
         }
@@ -43,10 +45,21 @@
             document.getElementById('output').innerText = merge_math(wrap_vars(replace_unicode(s)));
         }
 
-        function wrap_vars(input) {
-            let vars = ['a', 'b', 'c', 'd', 'x', 'y', 'z', 'p', 'q', 'm', 'n', 'k', 'd', 'r'];
+        function is_mathvalue(c) {
+            return vars.includes(c) || isdigit(c);
+        }
+
+        function is_mathsym(c) {
             // Ignore all commands (cdot, ge, etc.). Those will be wrapped by $ in replace_unicode.
             let mathsym = ['/', '+', '-', '=', '>', '<', '(', ')'];
+            return mathsym.includes(c);
+        }
+
+        function is_math(c) {
+            return is_mathvalue(c) || is_mathsym(c);
+        }
+
+        function wrap_vars(input) {
             let punctuation = [',', '.', '?'];
 
             let res = "";
@@ -83,7 +96,7 @@
                 }
 
                 if (in_math) {
-                    if (isdigit(curr) == false && mathsym.includes(curr) == false && vars.includes(curr) == false) {
+                    if (is_math(curr) == false) {
                         in_math = false;
                         res += '$';
                         res += curr;
@@ -92,8 +105,10 @@
 
                     res += curr;
                 } else {
-                    let is_var = (prev == ' ' || isdigit(prev)) && (vars.includes(curr) && (next == '.') == false) && (punctuation.includes(next) || mathsym.includes(next) || vars.includes(next) || isdigit(next) || next == ' ');
-                    if (is_var || isdigit(curr) || mathsym.includes(curr)) {
+                    let is_mathexpr = (prev == ' ' || is_math(prev)) &&
+                                 is_math(curr) &&
+                                 (punctuation.includes(next) || is_math(next) || next == ' ');
+                    if (is_mathexpr) {
                         in_math = true;
                         res += '$';
                     }
