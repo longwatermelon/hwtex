@@ -66,7 +66,7 @@
 
         function is_mathsym(c) {
             // Ignore all commands (cdot, ge, etc.). Those will be wrapped by $ in replace_unicode.
-            let mathsym = ['/', '+', '-', '=', '>', '<', '(', ')'];
+            let mathsym = ['/', '+', '-', '=', '>', '<', '(', ')', '|'];
             return mathsym.includes(c);
         }
 
@@ -241,13 +241,13 @@
                         .replaceAll(/\u2265/g, " $\\ge$ ")
                         .replaceAll(/\u2264/g, " $\\le$ ")
                         .replaceAll(/\u007c/g, " $|$ ")
-                        .replaceAll("=", " $\\ne$ ")
                         .replaceAll("", " $\\lceil$ ")
                         .replaceAll("", " $\\rceil$ ")
                         .replaceAll(/\u221a/g, " $\\sqrt$ ")
                         .replaceAll(/\u2208/g, " $\\in$ ")
                         .replaceAll(/\u2200/g, " $\\forall$ ")
-                        .replaceAll(/\u2203/g, " $\\exists$ ");
+                        .replaceAll(/\u2203/g, " $\\exists$ ")
+                        .replaceAll("", " $\\not$ ");
         }
     </script>
 </html>
