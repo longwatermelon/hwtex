@@ -2,7 +2,21 @@
 <html>
     Paste problem here:
     <input type="text" id="input"><br>
-    <button type="button" onclick="generate();">Generate LaTeX</button><br><br>
+
+    <button type="button" onclick="generate();">Generate LaTeX</button><br>
+    <details>
+        <summary>Settings</summary>
+        <fieldset>
+            <legend>Exponent / subscript:</legend>
+            <div>
+                <input type="radio" id="exponent" name="expsub" checked />
+                <label for="exponent">Interpret "a2" as "a^2"</label><br>
+
+                <input type="radio" id="subscript" name="expsub" />
+                <label for="subscript">Interpret "a2" as "a_2"</label>
+            </div>
+        </fieldset>
+    </details><br>
 
     <code>
     <div id="output"></div>
@@ -42,7 +56,7 @@
             s += " .";
             s = s.replaceAll('\n', ' ');
 
-            document.getElementById('output').innerText = merge_math(wrap_vars(replace_unicode(s)));
+            document.getElementById('output').innerText = expsub(merge_math(wrap_vars(replace_unicode(s))));
         }
 
         function is_mathvalue(c) {
@@ -71,6 +85,7 @@
                 let curr = input[i];
                 let next = input[i + 1];
 
+                // Check if sequence of multiplied vars or just a word
                 if (prev == ' ' && isalpha(curr)) {
                     let found_nonvar = false;
                     let word = curr;
@@ -96,6 +111,7 @@
                 }
 
                 if (in_math) {
+                    // Potentially end current math env
                     if (is_math(curr) == false) {
                         in_math = false;
                         res += '$';
@@ -105,6 +121,7 @@
 
                     res += curr;
                 } else {
+                    // Potentially start new math env
                     let is_mathexpr = (prev == ' ' || is_math(prev)) &&
                                  is_math(curr) &&
                                  (punctuation.includes(next) || is_math(next) || next == ' ');
@@ -163,6 +180,35 @@
                 }
 
                 res += ch;
+            }
+
+            return res;
+        }
+
+        function expsub(input) {
+            let in_math = false;
+            let res = "";
+            let option = Array.from(document.getElementsByName("expsub")).find((radio) => radio.checked);
+            let c = '';
+            if (option.id == "exponent") {
+                c = '^';
+            } else {
+                c = '_';
+            }
+
+            for (let i = 0; i < input.length; i++) {
+                if (input[i] == '$') {
+                    in_math = !in_math;
+                }
+
+                if (in_math) {
+                    if (vars.includes(input[i]) && isdigit(input[i + 1])) {
+                        res += input[i] + c;
+                        continue;
+                    }
+                }
+
+                res += input[i];
             }
 
             return res;
