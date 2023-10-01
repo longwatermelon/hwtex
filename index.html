@@ -7,7 +7,7 @@
     <details>
         <summary>Settings</summary>
         <fieldset>
-            <legend>Exponent / subscript:</legend>
+            <legend>Exponent / subscript</legend>
             <div>
                 <input type="radio" id="exponent" name="expsub" checked />
                 <label for="exponent">Interpret "a2" as "a^2"</label><br>
@@ -24,9 +24,9 @@
 
     Limitations
     <ul style="margin-top:0px;">
-        <li>Exponents, subscripts, and fractions are impossible to detect accurately</li>
+        <li>Exponents and subscripts limited to single-digit values</li>
+        <li>Can't parse fracs</li>
         <li>Can't generate align environments</li>
-        <li>It's impossible to decide if the character 'a' is a variable or a word, so it's treated as a variable by default</li>
     </ul>
 
     <style>
