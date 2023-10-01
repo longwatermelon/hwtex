@@ -101,7 +101,7 @@
                         }
                     }
 
-                    let bank = ['an', 'and', 'any', 'can', 'by'];
+                    let bank = ['an', 'and', 'any', 'can', 'by', 'odd'];
                     if (found_nonvar || bank.includes(word)) {
                         i = next_space_index;
                         res += word + ' ';
@@ -201,12 +201,16 @@
                 }
 
                 if (in_math) {
-                    if (vars.includes(input[i]) && isdigit(input[i + 1])) {
+                    if (vars.includes(input[i]) && (isdigit(input[i + 1]) || (input[i + 1] == ' ' && isdigit(input[i + 2])))) {
                         res += input[i] + c;
                         continue;
                     }
                 }
 
+                // Just put down expsub, don't leave space
+                if (res[res.length - 1] == c && input[i] == ' ') {
+                    continue;
+                }
                 res += input[i];
             }
 
