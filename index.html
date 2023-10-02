@@ -246,24 +246,25 @@
         }
 
         function replace_unicode(input) {
-            return input.replaceAll(/\u2212/g, " - ")
-                        .replaceAll(/\u00b7/g, " $\\cdot$ ")
-                        .replaceAll("", " $\\lfloor$ ")
-                        .replaceAll("", " $\\rfloor$ ")
-                        .replaceAll(/\u2265/g, " $\\ge$ ")
-                        .replaceAll(/\u2264/g, " $\\le$ ")
-                        .replaceAll(/\u007c/g, " $|$ ")
-                        .replaceAll("", " $\\lceil$ ")
-                        .replaceAll("", " $\\rceil$ ")
-                        .replaceAll(/\u221a/g, " $\\sqrt$ ")
-                        .replaceAll(/\u2208/g, " $\\in$ ")
-                        .replaceAll(/\u2200/g, " $\\forall$ ")
-                        .replaceAll(/\u2203/g, " $\\exists$ ")
-                        .replaceAll("", " $\\not$ ")
-                        .replaceAll(/\u2227/g, " $\\land$ ")
-                        .replaceAll(/\u2192/g, " $\\implies$ ")
-                        .replaceAll(/\u2228/g, " $\\lor$ ")
-                        .replaceAll(/\u223c/g, " $~$ ");
+            return input.replace(/\u2212/g, " - ")
+                        .replace(/\u00b7/g, " $\\cdot$ ")
+                        .replace(//g, " $\\lfloor$ ")
+                        .replace(//g, " $\\rfloor$ ")
+                        .replace(/\u2265/g, " $\\ge$ ")
+                        .replace(/\u2264/g, " $\\le$ ")
+                        .replace(/ \u007c/g, " $\\nmid$ ")
+                        .replace(/\u007c/g, " $|$ ")
+                        .replace(//g, " $\\lceil$ ")
+                        .replace(//g, " $\\rceil$ ")
+                        .replace(/\u221a/g, " $\\sqrt$ ")
+                        .replace(/\u2208/g, " $\\in$ ")
+                        .replace(/\u2200/g, " $\\forall$ ")
+                        .replace(/\u2203/g, " $\\exists$ ")
+                        .replace(//g, " $\\not$ ")
+                        .replace(/\u2227/g, " $\\land$ ")
+                        .replace(/\u2192/g, " $\\implies$ ")
+                        .replace(/\u2228/g, " $\\lor$ ")
+                        .replace(/\u223c/g, " $~$ ");
         }
     </script>
 </html>
