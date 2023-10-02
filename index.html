@@ -66,7 +66,7 @@
 
         function is_mathsym(c) {
             // Ignore all commands (cdot, ge, etc.). Those will be wrapped by $ in replace_unicode.
-            let mathsym = ['/', '+', '-', '=', '>', '<', '(', ')', '|'];
+            let mathsym = ['/', '+', '-', '=', '>', '<', '(', ')', '|', '~'];
             return mathsym.includes(c);
         }
 
@@ -79,7 +79,19 @@
             res += input[0];
 
             let in_math = false;
+            let in_existing_math = false;
             for (let i = 1; i < input.length - 1; i++) {
+                if (input[i] == '$') {
+                    in_existing_math = !in_existing_math;
+                    res += '$';
+                    continue;
+                }
+
+                if (in_existing_math) {
+                    res += input[i];
+                    continue;
+                }
+
                 let prev = input[i - 1];
                 let curr = input[i];
                 let next = input[i + 1];
@@ -247,7 +259,11 @@
                         .replaceAll(/\u2208/g, " $\\in$ ")
                         .replaceAll(/\u2200/g, " $\\forall$ ")
                         .replaceAll(/\u2203/g, " $\\exists$ ")
-                        .replaceAll("", " $\\not$ ");
+                        .replaceAll("", " $\\not$ ")
+                        .replaceAll(/\u2227/g, " $\\land$ ")
+                        .replaceAll(/\u2192/g, " $\\implies$ ")
+                        .replaceAll(/\u2228/g, " $\\lor$ ")
+                        .replaceAll(/\u223c/g, " $~$ ");
         }
     </script>
 </html>
