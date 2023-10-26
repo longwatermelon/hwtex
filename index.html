@@ -123,7 +123,8 @@
 
                 if (in_math) {
                     // Potentially end current math env
-                    if (is_math(curr) == false) {
+                    // Math env can continue if it contains commas
+                    if (is_math(curr) == false && curr != ',') {
                         in_math = false;
                         res += '$';
                         res += curr;
