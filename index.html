@@ -123,8 +123,7 @@
 
                 if (in_math) {
                     // Potentially end current math env
-                    // Math env can continue if it contains commas
-                    if (is_math(curr) == false && curr != ',') {
+                    if (is_math(curr) == false) {
                         in_math = false;
                         res += '$';
                         res += curr;
@@ -266,7 +265,8 @@
                         .replace(/\u2192/g, " $\\implies$ ")
                         .replace(/\u2228/g, " $\\lor$ ")
                         .replace(/\u223c/g, " $~$ ")
-                        .replace("gcd", " $\\gcd$ ");
+                        .replace("gcd", " $\\gcd$ ")
+                        .replace("lcm", " $\\text{lcm}$ ");
         }
     </script>
 </html>
