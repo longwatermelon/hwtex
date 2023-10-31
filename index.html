@@ -66,7 +66,7 @@
 
         function is_mathsym(c) {
             // Ignore all commands (cdot, ge, etc.). Those will be wrapped by $ in replace_unicode.
-            let mathsym = ['/', '+', '-', '=', '>', '<', '(', ')', '|', '~'];
+            let mathsym = ['/', '+', '-', '=', '>', '<', '(', ')', '|', '~', '!'];
             return mathsym.includes(c);
         }
 
